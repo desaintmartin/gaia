@@ -8,13 +8,19 @@ require('/shared/test/unit/mocks/mock_keyboard_helper.js');
 require('/shared/test/unit/mocks/mock_settings_listener.js');
 require('/shared/test/unit/mocks/mock_navigator_moz_settings.js');
 require('/test/unit/mock_applications.js');
+// Needed when running after/before modal_dialog_test.js
+require('/test/unit/mock_statusbar.js');
+// Needed when running after/before cards_view_test
+require('/test/unit/mock_attention_screen.js');
 requireApp('system/js/keyboard_manager.js');
 
 var mocksHelperForKeyboardManager = new MocksHelper([
     'SettingsListener',
     'KeyboardHelper',
     'LazyLoader',
-    'Applications'
+    'Applications',
+    'StatusBar',
+    'AttentionScreen',
 ]).init();
 
 suite('KeyboardManager', function() {

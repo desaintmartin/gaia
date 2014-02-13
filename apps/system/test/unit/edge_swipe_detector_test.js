@@ -1,32 +1,52 @@
 'use strict';
 
-requireApp('system/js/edge_swipe_detector.js');
-
 requireApp('system/test/unit/mock_sheets_transition.js');
 requireApp('system/test/unit/mock_stack_manager.js');
 requireApp('system/test/unit/mock_touch_forwarder.js');
 requireApp('system/shared/test/unit/mocks/mock_settings_listener.js');
+// Needed if run after app_window_manager_test
+requireApp('system/test/unit/mock_homescreen_launcher.js');
 
 var mocksForEdgeSwipeDetector = new MocksHelper([
   'SheetsTransition',
   'StackManager',
   'SettingsListener',
-  'TouchForwarder'
+  'TouchForwarder',
+  'HomescreenLauncher'
 ]).init();
+
+mocha.globals([
+  'EdgeSwipeDetector'
+]);
 
 suite('system/EdgeSwipeDetector >', function() {
   mocksForEdgeSwipeDetector.attachTestHelpers();
   var screen;
+  var previous;
+  var next;
 
-  setup(function() {
+  suiteSetup(function(done) {
     // DOM
-    EdgeSwipeDetector.previous = document.createElement('div');
-    EdgeSwipeDetector.previous.classList.add('gesture-panel');
-    EdgeSwipeDetector.next = document.createElement('div');
-    EdgeSwipeDetector.next.classList.add('gesture-panel');
-
+    previous = document.createElement('div');
+    previous.id = 'left-panel';
+    previous.classList.add('gesture-panel');
+    document.body.appendChild(previous);
+    next = document.createElement('div');
+    next.id = 'right-panel';
+    document.body.appendChild(next);
     screen = document.createElement('div');
     screen.id = 'screen';
+    document.body.appendChild(screen);
+    requireApp('system/js/edge_swipe_detector.js', done);
+  });
+
+  suiteTeardown(function() {
+    document.body.removeChild(screen);
+    document.body.removeChild(previous);
+    document.body.removeChild(next);
+  });
+
+  setup(function() {
     EdgeSwipeDetector.screen = screen;
     EdgeSwipeDetector.init();
     MockSettingsListener.mCallbacks['edgesgesture.enabled'](true);
@@ -51,7 +71,9 @@ suite('system/EdgeSwipeDetector >', function() {
 
   function launchTransitionEnd() {
     var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent('appopen', true, false, null);
+    evt.initCustomEvent('appopen', true, false, {'detail': {
+      isHomeScreen: true
+    }});
     window.dispatchEvent(evt);
   }
 

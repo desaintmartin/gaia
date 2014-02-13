@@ -113,7 +113,9 @@ suite('KeyboardHelper', function() {
 
   function trigger(event) {
     var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent(event, true, false, {});
+    evt.initCustomEvent(event, true, false, {details: {
+      application: {}
+    }});
     window.dispatchEvent(evt);
   }
 

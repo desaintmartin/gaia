@@ -1,8 +1,6 @@
 // Card Views Test
 
 'use strict';
-// Ignore leak, otherwise an error would occur when using MockMozActivity.
-mocha.setup({ignoreLeaks: true});
 
 require('/shared/test/unit/mocks/mock_gesture_detector.js');
 requireApp('system/test/unit/mock_screen_layout.js');

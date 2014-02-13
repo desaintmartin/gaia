@@ -1,3 +1,5 @@
+'use strict';
+
 var MockAttentionScreen = {
   mVisible: false,
   mFullyVisible: false,
@@ -6,6 +8,9 @@ var MockAttentionScreen = {
   },
   isFullyVisible: function() {
     return this.mFullyVisible;
+  },
+  getAttentionScreenOrigins: function() {
+    return [];
   },
   mTeardown: function() {
     this.mVisible = false;

@@ -211,7 +211,7 @@
     if (this.isActive()) {
       var self = this;
       this.element.addEventListener('_closed', function onClose() {
-        self.element.addEventListener('_closed', onClose);
+        self.element.removeEventListener('_closed', onClose);
         self.publish('terminated');
         // If caller is an instance of appWindow,
         // tell AppWindowManager to open it.
@@ -232,9 +232,12 @@
         } else {
           console.warn('unknown window type of activity caller.');
         }
-
-        var e = self.element.parentNode.removeChild(self.element);
-        self.debug('removing ' + e);
+        if (self.element.parentNode != null) {
+          var e = self.element.parentNode.removeChild(self.element);
+          self.debug('removing ' + e);
+        } else {
+          self.warn(self.element + ' has not parent');
+        }
         self.publish('removed');
       });
       this.close();
@@ -243,8 +246,12 @@
       if (this.activityCallee) {
         this.activityCallee.kill();
       }
-      var e = this.element.parentNode.removeChild(this.element);
-      this.debug('removing ' + e);
+      if (this.element.parentNode != null) {
+        var e = this.element.parentNode.removeChild(this.element);
+        this.debug('removing ' + e);
+      } else {
+        this.debug(this.element + ' has not parent');
+      }
       this.publish('removed');
     }
     this.debug('killed by ', evt ? evt.type : 'direct function call.');
