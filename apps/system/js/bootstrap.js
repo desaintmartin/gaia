@@ -28,6 +28,14 @@ window.addEventListener('load', function startup() {
       FtuLauncher.retrieve();
     });
     HomescreenLauncher.init();
+    // Homescreen is shown when created even behind lockscreen:
+    // Hide it after first open
+    if (lockScreen.locked) { // Don't hide it if lockscreen is disabled
+      window.addEventListener('homescreenopened', function onAppOpened(e) {
+        window.removeEventListener('homescreenopened', onAppOpened);
+        HomescreenLauncher.getHomescreen().toggle(false);
+      });
+    }
   }
 
   if (Applications.ready) {
