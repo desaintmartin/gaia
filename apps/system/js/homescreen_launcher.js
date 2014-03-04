@@ -147,6 +147,23 @@
       window.removeEventListener('trusteduishow', this);
       window.removeEventListener('applicationready', this._onAppReady);
       this._started = false;
+
+      // Homescreen is shown when created even behind lockscreen:
+      // hide it after first open
+      var self = this;
+      window.addEventListener('homescreenopening', function onAppOpened(e) {console.log('opening')});
+      window.addEventListener('homescreenopened', function onAppOpened(e) {console.log('opened')});
+      window.addEventListener('homescreenrendered', function onAppOpened(e) {console.log('rendered')});
+      window.addEventListener('homescreenwillrender', function onAppOpened(e) {console.log('rendering')});
+      window.addEventListener('homescreenforeground', function onAppOpened(e) {console.log('foreground')});
+
+      if (lockScreen.locked) { // Don't hide it if lockscreen is disabled
+        window.addEventListener('homescreenrendered', function onHomescreenOpened(e) {
+          window.removeEventListener('homescreerendered', onHomescreenOpened);
+          console.log('monevent');
+          self.getHomescreen().toggle(false);
+        });
+      }
     },
 
     /**
